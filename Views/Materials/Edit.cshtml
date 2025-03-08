@@ -1,0 +1,85 @@
+﻿@model AutomaticInfotch_Assignment.Models.Material
+
+@{
+    ViewData["Title"] = "Material Entry";
+}
+
+<h3 class="mb-4">Material Entry</h3>
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form asp-action="Edit" class="p-4 border rounded shadow-sm bg-light">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Code (Read-only) with Save and Cancel Buttons on Right -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="Code" class="col-sm-2 col-form-label font-weight-bold">Code</label>
+                <div class="col-sm-4">
+                    <input asp-for="Code" class="form-control" readonly />
+                </div>
+                <div class="col-sm-6 text-right">
+                    <input type="submit" value="Save" class="btn btn-primary mr-2" />
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <!-- Short Text in One Row -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="ShortText" class="col-sm-2 col-form-label font-weight-bold">Short Text</label>
+                <div class="col-sm-10">
+                    <input asp-for="ShortText" class="form-control" />
+                    <span asp-validation-for="ShortText" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Long Text in One Row -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="LongText" class="col-sm-2 col-form-label font-weight-bold">Long Text</label>
+                <div class="col-sm-10">
+                    <textarea asp-for="LongText" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="LongText" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Reorder Level and Min Order Quantity in One Row with col-3 -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="ReorderLevel" class="col-sm-2 col-form-label font-weight-bold">Reorder Level</label>
+                <div class="col-sm-3">
+                    <input asp-for="ReorderLevel" class="form-control" />
+                    <span asp-validation-for="ReorderLevel" class="text-danger"></span>
+                </div>
+                <label asp-for="MinOrderQuantity" class="col-sm-2 col-form-label font-weight-bold">Min Order Quantity</label>
+                <div class="col-sm-3">
+                    <input asp-for="MinOrderQuantity" class="form-control" />
+                    <span asp-validation-for="MinOrderQuantity" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- UOM and IsActive in One Row -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="Unit" class="col-sm-2 col-form-label font-weight-bold">UOM</label>
+                <div class="col-sm-4">
+                    <input asp-for="Unit" class="form-control" />
+                    <span asp-validation-for="Unit" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6 d-flex align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="IsActive" />
+                        <label class="form-check-label font-weight-bold" asp-for="IsActive">Is Active</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-link">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

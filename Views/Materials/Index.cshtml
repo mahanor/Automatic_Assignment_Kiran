@@ -1,0 +1,147 @@
+﻿@model IEnumerable<AutomaticInfotch_Assignment.Models.Material>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<br />
+<div class="row">
+    <div class="col-lg-10 col-md-6">
+        <h3>All Material</h3>
+    </div>
+    <div class="col-md-2">
+        <a asp-action="Create" class="btn btn-primary">Add New <i class="fa fa-plus"></i></a>
+    </div>
+</div>
+
+<br />  
+<br />
+
+<table class="table table-bordered table-responsive text-center">
+    @{
+        int count = 1;
+    }
+    <thead class="table-active">
+        <tr>
+          
+            <th style="width:5%">
+                Sr. No.
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShortText)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LongText)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Unit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReorderLevel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinOrderQuantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th>Actions</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @count
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShortText)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LongText)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Unit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReorderLevel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinOrderQuantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+              
+             
+              
+
+                <td class="d-flex align-items-center">
+                    <a asp-action="Edit" asp-route-code="@item.Code" class="btn btn-sm btn-warning me-2">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </a>
+                 
+                    <button type="button" class="btn btn-sm btn-danger delete-btn" data-code="@item.Code">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                </td>
+
+            </tr>
+            count++;
+        }
+    </tbody>
+</table>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Ensure jQuery is included before using it -->
+<!-- Load SweetAlert2 before using it -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".delete-btn").click(function () {
+            var vendorCode = $(this).data("code"); // Get vendor code from button attribute
+
+            window.Swal.fire({
+                title: "Are you sure?",
+                text: "Do you really want to delete this vendor?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/Materials/Delete",
+                        type: "POST",
+                        data: { code: vendorCode },
+                        success: function (response) {
+                            if (response.success) {
+                                window.Swal.fire("Deleted!", "material deleted successfully.", "success")
+                                    .then(() => window.location.href = "/Materials/Index"); // Reload the page after success
+                            }
+                            else {
+                                window.Swal.fire("Error!", "This material is already in use and cannot be deleted", "error");
+                            }
+
+
+
+                        },
+                        error: function () {
+                            window.Swal.fire("Error!", "Something went wrong. Try again later.", "error");
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>

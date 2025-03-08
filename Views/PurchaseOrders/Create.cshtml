@@ -1,0 +1,362 @@
+﻿
+
+@model AutomaticInfotch_Assignment.Models.PurchaseOrder
+@{
+    ViewData["Title"] = "Create Purchase Order";
+    //var vendors = ViewBag.vendors as List<Vendor>;
+    var materials = ViewBag.materials as List<Material>;
+}
+
+
+
+<form asp-action="Create" method="post">
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <h3>Purchase Order Entry</h3>
+        </div>
+
+        <div class="col-md-4">
+           
+        </div>
+        <div class="col-md-4 text-end">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label asp-for="OrderNo"></label>
+            <input asp-for="OrderNo" class="form-control" readonly />
+            <span asp-validation-for="OrderNo" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="OrderDate"></label>
+            <input asp-for="OrderDate" type="date" class="form-control" />
+            <span asp-validation-for="OrderDate" class="text-danger"></span>
+        </div>
+    
+        
+    </div>
+
+
+
+    <div class="row mb-3">
+     
+        <div class="col-md-6">
+            <label asp-for="Vendor">Vendor</label>
+            <select asp-for="Vendor" class="form-control">
+                <option value="">-- Select Vendor --</option>
+                @foreach (var vendor in Model.vendors)
+                {
+                    <option value="@vendor.Code">@vendor.Name</option>
+                }
+            </select>
+            <span asp-validation-for="Vendor" class="text-danger"></span>
+        </div>
+
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes">Notes</label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label asp-for="OrderValue">Order Value</label>
+            <input asp-for="OrderValue" class="form-control" readonly />
+        </div>
+    </div>
+
+    <h4>Line Items</h4>
+
+    <div class="row mb-2">
+        <div class="col-md-3">
+            <label>Material</label>
+            <select id="material" class="form-control">
+                <option value="">-- Select --</option>
+                @foreach (var material in materials)
+                {
+                    <option value="@material.Code" data-shorttext="@material.ShortText" data-uom="@material.Unit">@material.Code</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label>Short Text</label>
+            <input id="shortText" class="form-control" readonly />
+        </div>
+
+
+        <div class="col-md-2">
+            <label>UOM</label>
+            <input id="uom" class="form-control" readonly />
+        </div>
+
+    </div>
+
+    <div class="row mb-2">
+
+
+        <div class="col-md-4">
+            <label>Quantity</label>
+            <input id="quantity" type="number" min="1" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label>Rate</label>
+            <input id="rate" type="number" step="0.01" class="form-control" />
+        </div>
+
+    </div>
+    <div class="row mb-2">
+
+
+
+        <div class="col-md-4">
+            <label>Amount</label>
+            <input id="amount" class="form-control" readonly />
+        </div>
+        <div class="col-md-4">
+            <label>Expected Date</label>
+            <input id="expectedDate"  type="date" class="form-control" />
+
+      
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <button type="button" class="btn btn-secondary w-100" id="addLine">Add Line</button>
+        </div>
+        <div class="col-md-4">
+            <button type="button" class="btn btn-warning w-100" id="updateLine">Update Line</button>
+        </div>
+        <div class="col-md-4">
+            <button type="button" class="btn btn-danger w-100" id="removeLine">Remove Line</button>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Material Code</th>
+               @*  <th>Short Text</th>
+                <th>UOM</th> *@
+                <th>Quantity</th>
+                <th>Rate</th>
+                <th>Amount</th>
+                <th>Expected Date</th>
+            </tr>
+        </thead>
+        <tbody id="lineItemsTable">
+        </tbody>
+    </table>
+
+    <div id="lineItemsContainer">
+        @for (int i = 0; i < Model.LineItems.Count; i++)
+        {
+            <input type="hidden" name="LineItems[@i].MaterialCode" value="@Model.LineItems[i].MaterialCode" />
+            <input type="hidden" name="LineItems[@i].ShortText" value="@Model.LineItems[i].ShortText" />
+            <input type="hidden" name="LineItems[@i].UOM" value="@Model.LineItems[i].UOM" />
+            <input type="hidden" name="LineItems[@i].Quantity" value="@Model.LineItems[i].Quantity" />
+            <input type="hidden" name="LineItems[@i].Rate" value="@Model.LineItems[i].Rate" />
+            <input type="hidden" name="LineItems[@i].Amount" value="@Model.LineItems[i].Amount" />
+            <input type="hidden" name="LineItems[@i].ExpectedDate" value="@Model.LineItems[i].ExpectedDate" />
+        }
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+ 
+    <script>
+       
+        let lineItemIndex = @Model.LineItems.Count;
+
+        // Calculate amount when quantity or rate changes
+        function calculateAmount() {
+            const quantity = parseFloat(document.getElementById('quantity').value) || 0;
+            const rate = parseFloat(document.getElementById('rate').value) || 0;
+            document.getElementById('amount').value = (quantity * rate).toFixed(2);
+        }
+
+        document.getElementById('quantity').addEventListener('input', calculateAmount);
+        document.getElementById('rate').addEventListener('input', calculateAmount);
+
+        // Populate short text and UOM when material changes
+        document.getElementById('material').addEventListener('change', function () {
+            const selected = this.selectedOptions[0];
+            document.getElementById('shortText').value = selected.getAttribute('data-shorttext');
+            document.getElementById('uom').value = selected.getAttribute('data-uom');
+        });
+
+        // Add a new line item to the table
+        document.getElementById('addLine').addEventListener('click', function () {
+            const materialCode = document.getElementById('material').value;
+            const shortText = document.getElementById('shortText').value;
+            const uom = document.getElementById('uom').value;
+            const quantity = document.getElementById('quantity').value;
+            const rate = document.getElementById('rate').value;
+            const amount = document.getElementById('amount').value;
+            const expectedDate = document.getElementById('expectedDate').value;
+
+            if (!materialCode || !quantity || !rate || !expectedDate) {
+                alert("Please fill all required fields before adding a line.");
+                return;
+            }
+
+            const table = document.getElementById('lineItemsTable');
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td><input type="checkbox" class="select-line" /></td>
+                <td>${materialCode}</td>
+                <td>${quantity}</td>
+                <td>${rate}</td>
+                <td>${amount}</td>
+                <td>${expectedDate}</td>
+            `;
+
+            table.appendChild(row);
+            appendHiddenFields(lineItemIndex++, materialCode, shortText, uom, quantity, rate, amount, expectedDate);
+            updateOrderValue();
+            clearLineInputs();
+        });
+
+        function appendHiddenFields(index, materialCode, shortText, uom, quantity, rate, amount, expectedDate) {
+            const container = document.getElementById('lineItemsContainer');
+            const fields = `
+                <input type="hidden" name="LineItems[${index}].MaterialCode" value="${materialCode}" />
+                <input type="hidden" name="LineItems[${index}].Quantity" value="${quantity}" />
+                <input type="hidden" name="LineItems[${index}].Rate" value="${rate}" />
+                <input type="hidden" name="LineItems[${index}].Amount" value="${amount}" />
+                <input type="hidden" name="LineItems[${index}].ExpectedDate" value="${expectedDate}" />
+                <input type="hidden" name="LineItems[${index}].UOM" value="${uom}" />
+                <input type="hidden" name="LineItems[${index}].ShortText" value="${shortText}" />
+            `;
+            container.insertAdjacentHTML('beforeend', fields);
+        }
+
+        // Handle selecting a row to edit
+        document.getElementById('lineItemsTable').addEventListener('change', function (event) {
+            if (event.target.classList.contains('select-line')) {
+                const row = event.target.closest('tr');
+                document.getElementById('material').value = row.cells[1].textContent;
+                document.getElementById('quantity').value = row.cells[2].textContent;
+                document.getElementById('rate').value = row.cells[3].textContent;
+                document.getElementById('amount').value = row.cells[4].textContent;
+                document.getElementById('expectedDate').value = row.cells[5].textContent;
+
+
+                // Retrieve ShortText and UOM from hidden fields
+                const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+                document.getElementById('shortText').value = document.querySelector(`[name="LineItems[${rowIndex}].ShortText"]`).value;
+                document.getElementById('uom').value = document.querySelector(`[name="LineItems[${rowIndex}].UOM"]`).value;
+
+
+                document.querySelectorAll('.select-line').forEach(cb => cb !== event.target && (cb.checked = false));
+            }
+        });
+
+        // Update selected row
+        document.getElementById('updateLine').addEventListener('click', function () {
+            const selectedCheckbox = document.querySelector('.select-line:checked');
+            if (!selectedCheckbox) {
+                alert("Please select a row to update.");
+                return;
+            }
+           
+
+            const row = selectedCheckbox.closest('tr');
+            const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+
+            row.cells[1].textContent = document.getElementById('material').value;
+            row.cells[2].textContent = document.getElementById('quantity').value;
+            row.cells[3].textContent = document.getElementById('rate').value;
+            row.cells[4].textContent = document.getElementById('amount').value;
+            row.cells[5].textContent = document.getElementById('expectedDate').value;
+
+            updateHiddenFields(rowIndex);
+            updateOrderValue();
+            clearLineInputs();
+        });
+
+      
+
+        function updateHiddenFields(index) {
+            const materialSelect = document.getElementById('material');
+            const selectedOption = materialSelect.selectedOptions[0];
+
+            document.querySelector(`[name="LineItems[${index}].MaterialCode"]`).value = materialSelect.value;
+            document.querySelector(`[name="LineItems[${index}].Quantity"]`).value = document.getElementById('quantity').value;
+            document.querySelector(`[name="LineItems[${index}].Rate"]`).value = document.getElementById('rate').value;
+            document.querySelector(`[name="LineItems[${index}].Amount"]`).value = document.getElementById('amount').value;
+            document.querySelector(`[name="LineItems[${index}].ExpectedDate"]`).value = document.getElementById('expectedDate').value;
+
+            // Ensure shortText and UOM are correctly updated
+            const uom = selectedOption.getAttribute('data-uom') || '';
+            const shortText = selectedOption.getAttribute('data-shorttext') || '';
+
+            document.querySelector(`[name="LineItems[${index}].UOM"]`).value = uom;
+            document.querySelector(`[name="LineItems[${index}].ShortText"]`).value = shortText;
+        }
+
+
+
+        // Remove selected row
+        document.getElementById('removeLine').addEventListener('click', function () {
+            document.querySelectorAll('.select-line:checked').forEach(checkbox => {
+                const row = checkbox.closest('tr');
+                const rowIndex = Array.from(row.parentNode.children).indexOf(row);
+                row.remove();
+                removeHiddenFields(rowIndex);
+            });
+            updateOrderValue();
+        });
+
+        function removeHiddenFields(index) {
+            document.querySelectorAll(`[name^='LineItems[${index}]']`).forEach(input => input.remove());
+        }
+
+        // Update total order value
+        function updateOrderValue() {
+            let total = 0;
+            document.querySelectorAll('#lineItemsTable tr').forEach(row => {
+                const amount = parseFloat(row.cells[4]?.textContent) || 0;
+                total += amount;
+            });
+            document.querySelector('[name="OrderValue"]').value = total.toFixed(2);
+        }
+
+
+        function clearLineInputs() {
+            document.getElementById('material').value = '';
+            document.getElementById('shortText').value = '';
+            document.getElementById('uom').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('rate').value = '';
+            document.getElementById('amount').value = '';
+            document.getElementById('expectedDate').value = '';
+        }
+
+
+    </script>
+
+
+}
+
+<script>
+    document.getElementById("expectedDate").addEventListener("change", function () {
+        let selectedDate = new Date(this.value);
+        let today = new Date();
+        today.setHours(0, 0, 0, 0); // Remove time part
+
+        if (selectedDate <= today) {
+            alert("Expected Date must be a future date.");
+            this.value = "";
+        }
+    });
+</script>

@@ -1,0 +1,99 @@
+﻿@model AutomaticInfotch_Assignment.Models.Vendor
+
+@{
+    ViewData["Title"] = "Create Vendor";
+}
+
+<h3 class="mb-4">Create Vendor</h3>
+<hr />
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form asp-action="Create" class="p-4 border rounded shadow-sm bg-light">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Code (Read-only) with Create and Cancel Buttons on Right -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="Code" class="col-sm-2 col-form-label font-weight-bold">Code</label>
+                <div class="col-sm-4">
+                    <input asp-for="Code" class="form-control" readonly />
+                </div>
+                <div class="col-sm-6 text-right">
+                    <input type="submit" value="Create" class="btn btn-primary mr-2" />
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </div>
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <!-- Name -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="Name" class="col-sm-2 col-form-label font-weight-bold">Name</label>
+                <div class="col-sm-10">
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Address Line 1 -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="AddressLine1" class="col-sm-2 col-form-label font-weight-bold">Address Line 1</label>
+                <div class="col-sm-10">
+                    <input asp-for="AddressLine1" class="form-control" />
+                    <span asp-validation-for="AddressLine1" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Address Line 2 -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="AddressLine2" class="col-sm-2 col-form-label font-weight-bold">Address Line 2</label>
+                <div class="col-sm-10">
+                    <input asp-for="AddressLine2" class="form-control" />
+                    <span asp-validation-for="AddressLine2" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Contact Email and Contact No in One Row -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="ContactEmail" class="col-sm-2 col-form-label font-weight-bold">Contact Email</label>
+                <div class="col-sm-4">
+                    <input asp-for="ContactEmail" class="form-control" />
+                    <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                </div>
+                <label asp-for="ContactNo" class="col-sm-2 col-form-label font-weight-bold">Contact No</label>
+                <div class="col-sm-4">
+                    <input asp-for="ContactNo" class="form-control" />
+                    <span asp-validation-for="ContactNo" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Valid Till Date -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="ValidTillDate" class="col-sm-2 col-form-label font-weight-bold">Valid Till Date</label>
+                <div class="col-sm-10">
+                    <input asp-for="ValidTillDate" type="date" class="form-control" />
+                    <span asp-validation-for="ValidTillDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- IsActive -->
+            <div class="form-group row align-items-center mb-4">
+                <label asp-for="IsActive" class="col-sm-2 col-form-label font-weight-bold">Active</label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="IsActive" />
+                        <label class="form-check-label font-weight-bold" asp-for="IsActive">Is Active</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-link">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

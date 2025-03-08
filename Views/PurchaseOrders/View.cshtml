@@ -1,0 +1,74 @@
+﻿@model AutomaticInfotch_Assignment.Models.PurchaseOrder
+
+@{
+    ViewData["Title"] = "View";
+}
+
+
+
+<div>
+    <h4>Purchase Order Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.OrderId)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.OrderId)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.OrderNo)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.OrderNo)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.OrderDate)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.OrderDate)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Vendor)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Vendor)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Notes)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Notes)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.OrderValue)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.OrderValue)</dd>
+    </dl>
+</div>
+
+<!-- Line Items Table -->
+@if (Model.LineItems != null && Model.LineItems.Any())
+{
+    <h4>Line Items</h4>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.LineItems.First().LineId)</th>
+                <th>@Html.DisplayNameFor(model => model.LineItems.First().MaterialCode)</th>
+                <th>@Html.DisplayNameFor(model => model.LineItems.First().ShortText)</th>
+                <th>@Html.DisplayNameFor(model => model.LineItems.First().UOM)</th>
+                <th>@Html.DisplayNameFor(model => model.LineItems.First().Quantity)</th>
+                <th>@Html.DisplayNameFor(model => model.LineItems.First().Rate)</th>
+                <th>@Html.DisplayNameFor(model => model.LineItems.First().Amount)</th>
+                <th>@Html.DisplayNameFor(model => model.LineItems.First().ExpectedDate)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.LineItems)
+            {
+                <tr>
+                    <td>@item.LineId</td>
+                    <td>@item.MaterialCode</td>
+                    <td>@item.ShortText</td>
+                    <td>@item.UOM</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Rate</td>
+                    <td>@item.Amount</td>
+                    <td>@item.ExpectedDate.ToString("yyyy-MM-dd")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No Line Items available for this order.</p>
+}
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
